@@ -6,6 +6,7 @@
 
 :- module(path_utility,
           [module_directory/2
+          ,directory/1
           ,path_list/2
           ,tex_file/3
           ,swinb_file/3
@@ -20,6 +21,10 @@
 module_directory(Module,Directory) :-
     module_property(Module,file(ModuleFile)),
     directory_file_path(Directory,_,ModuleFile).
+
+directory(Directory) :-
+    context_module(Module),
+    module_directory(Module,Directory).
 
 % file name utility
 path_list(Path,List) :-

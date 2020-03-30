@@ -15,7 +15,7 @@
 :- use_module(path_utility).
 
 parse_test(F,R) :-
-  module_directory(plunit_latex2swish,D),
+  module_directory(plunit_tex2swi,D),
   atom_concat(D,'/test',T),
   parse_file(T,F,R).
 

@@ -10,9 +10,11 @@
 
 :- module(tex2swi,
           [tex2swi/0
+          ,git_save/0
           ]).
 
 :- use_module(library(debug)).
+:- use_module(library(git)).
 
 :- use_module(parse_tex).
 :- use_module(gen_swinb).
@@ -43,3 +45,13 @@ x :-
     parse_book(Book),
     parse_show(Book).
 */
+git_save :-
+    directory(Here),
+    is_git_directory(Here),
+    git_shortlog(Here,ShortLog,[]),
+    maplist(writeln,ShortLog),
+    git([commit,'-m','test commit'],[directory(Here)]),
+    git([push],[directory(Here)]).
+
+
+
