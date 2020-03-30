@@ -10,7 +10,7 @@
 
 :- module(tex2swi,
           [tex2swi/0
-          ,git_save/0
+          ,git_show_status/0
           ]).
 
 :- use_module(library(debug)).
@@ -45,13 +45,12 @@ x :-
     parse_book(Book),
     parse_show(Book).
 */
-git_save :-
+git_show_status :-
     directory(Here),
     is_git_directory(Here),
     git_shortlog(Here,ShortLog,[]),
-    maplist(writeln,ShortLog),
+    maplist(writeln,ShortLog).
+/*
     git([commit,'-m','test commit'],[directory(Here)]),
     git([push],[directory(Here)]).
-
-
-
+*/
