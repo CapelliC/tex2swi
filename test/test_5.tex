@@ -1,0 +1,24 @@
+\documentclass[11pt]{report}
+\usepackage{epsf}
+\setlength{\topmargin}{-0.25in}
+
+\newcommand{\demo}[1]{\hspace*{1.5cm}{\tt #1}}
+\newcommand{\desc}[1]{\item[{\tt #1}]\hspace*{1mm}\newline}
+\newcommand{\desce}[1]{\item[{\tt #1}]}
+\newcommand{\ouritem}[1]{\item[{\mbox{\tt #1}}]\ \\}
+\newcommand{\ournewitem}[2]{\item[{\mbox{\tt #1}}]\hspace*{\fill}{\mbox{\sf #2}}\ \\}
+
+\newcommand{\stuff}[1]{
+        \begin{minipage}{4in}
+        {\tt \samepage
+        \begin{tabbing}
+        \hspace{8mm} \= \hspace{6mm} \= \hspace{10mm} \= \hspace{55mm} \= \kill
+        #1 \hfill
+        \end{tabbing}
+        }
+        \end{minipage}
+}
+\newtheorem{dummylemma}{Dummy}[section]
+\newtheorem{DefinitioN}[dummylemma]{\bf Definition}%[section]
+\newenvironment{definition}[1]
+               {\begin{DefinitioN}\rm {\bf (#1)}}{\hspace{1cm} \hfill \end{DefinitioN}}
