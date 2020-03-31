@@ -32,7 +32,7 @@ generate_book(Structure) :-
     folder_book(Folder),
     format(atom(ImagesFolder),'~s/~w',[Folder,figures]),
     assertion(exists_directory(ImagesFolder)),
-    generate_swinb('books/tabled_prolog',
+    generate_swinb('examples/books/tabled_prolog',
                    'Tabled Prolog',book,ImagesFolder,Structure).
 
 folder_book(LatexFolder) :-
