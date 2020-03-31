@@ -105,8 +105,14 @@ content(Content) -->
     ]).
 
 publish_entry_point(SwishFolder) :-
+    /*
     phrase(entry_point,HtmlTokens),
     with_output_to(string(ToAdd),print_html(HtmlTokens)),
+    */
+    format(string(ToAdd),"
+### Books
+  - [Tabled Prolog Book](~w/tabled_prolog/book.swinb) by D.Warren
+    ",SwishFolder),
     add_to_swinb_if_needed(SwishFolder,'examples/examples',ToAdd).
 
 add_to_swinb_if_needed(Folder,BaseWinb,ToAdd) :-
@@ -114,14 +120,17 @@ add_to_swinb_if_needed(Folder,BaseWinb,ToAdd) :-
     read_file_to_string(Swinb,Current,[]),
     (   sub_string(Current,_,_,_,ToAdd)
     ->  true
-    ;   open(Swinb,append,S),
-        write(S,ToAdd),
-        close(S)
+    ;   sub_string(Current,S,_,E,"</div>"),
+        sub_string(Current,0,S,_,L),
+        sub_string(Current,E,_,0,R),
+        open(Swinb,write,Stream),
+        format(Stream,'~s~n~s~n~s',[L,ToAdd,R]),
+        close(Stream)
     ).
 
 entry_point -->
     {gen_params(StructFolder,_ImagesFolder)},
-    html([hr,
+    html([%hr, not working...
           div(class(notebook),
               div(class('nb-cell'),
                   a(href('~s/book.swinb'-[StructFolder]),'Tabled Prolog Book')))
