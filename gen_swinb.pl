@@ -89,7 +89,7 @@ debug(tex2swi(_),'gen_chapter_swinb ~s ~s',[Name,Title])
         ),
         html([
             div([a([class(to_chapter),
-                    href('books/tabled_prolog/~s.swinb'-[Name])],
+                    href('~s.swinb'-[Name])],
                    '~s'-[Title])])
         ])
     ).
@@ -143,15 +143,19 @@ content(Content,Title,PrevCh,NextCh) -->
             ])
     ]).
 
+swinb_target_base_url('example/books/tabled_prolog').
+
 publish_entry_point(SwishFolder) :-
     /*
     phrase(entry_point,HtmlTokens),
     with_output_to(string(ToAdd),print_html(HtmlTokens)),
     */
-    format(string(ToAdd),"
-### Books
-  - [Tabled Prolog Book](~w/tabled_prolog/book.swinb) by D.Warren
-    ",SwishFolder),
+    swinb_target_base_url(Base),
+    format(string(ToAdd),
+"### Books
+  - [Tabled Prolog Book](~w/book.swinb) by D.Warren
+",
+           Base),
     add_to_swinb_if_needed(SwishFolder,'examples/examples',ToAdd).
 
 add_to_swinb_if_needed(Folder,BaseWinb,ToAdd) :-
@@ -161,12 +165,13 @@ add_to_swinb_if_needed(Folder,BaseWinb,ToAdd) :-
     ->  true
     ;   sub_string(Current,S,_,E,"</div>"),
         sub_string(Current,0,S,_,L),
-        sub_string(Current,E,_,0,R),
+        E2 is E+6, % length of </div>
+        sub_string(Current,_,E2,0,R),
         open(Swinb,write,Stream),
         format(Stream,'~s~n~s~n~s',[L,ToAdd,R]),
         close(Stream)
     ).
-
+/*
 entry_point -->
     {gen_params(StructFolder,_ImagesFolder)},
     html([%hr, not working...
@@ -174,3 +179,4 @@ entry_point -->
               div(class('nb-cell'),
                   a(href('~s/book.swinb'-[StructFolder]),'Tabled Prolog Book')))
          ]).
+*/
