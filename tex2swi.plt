@@ -25,7 +25,8 @@ test(test_2,C==[c(begin,[arg(`x`)],`abc\n`)]) :-
   parse_show(C).
 
 test(test_3,[
-         G==`abc\n`+c(begin,[arg(`y`)],`123\n`)+`def\n`]) :-
+       G==`abc\n`+c(begin,[arg(`y`)],`123\n`)+`def\n`
+     ]) :-
   phrase(parse_tex(C),`
    \\begin{x}
     abc

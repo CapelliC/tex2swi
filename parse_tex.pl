@@ -101,7 +101,7 @@ content(Stops,Content) -->
         {Content=[c(C,As,Result)|Rest]}
     ).
 
-content(Stops,[$(S)|R]) -->
+content(Stops,[c($,[arg(S)],[])|R]) -->
     "$", string(S), "$",
     !,
     content(Stops,R).

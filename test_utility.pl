@@ -7,6 +7,7 @@
 :- module(test_utility,
           [parse_test/2
           ,parse_show/1
+          ,parse_show/2
           ,group_codes_in_content/2
           ]).
 
