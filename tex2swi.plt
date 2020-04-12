@@ -5,7 +5,6 @@
 */
 
 :- use_module(library(plunit)).
-:- use_module(library(debug)).
 
 :- use_module(parse_tex).
 :- use_module(test_utility).
@@ -49,12 +48,24 @@ test(test_4,[T==U]) :-
     c(input,[arg(`test_1`)],U)+
     `test_4, after test_1 !\n`,
   test_1_content(T),
-  debug(tex2swi(test),'U:~w~nT:~w',[U,T])
+  deb('U:~w~nT:~w',[U,T])
   .
 
 test(test_5,[]) :-
   parse_test(test_5,R),
   parse_show(R).
+
+test(test_6,[
+       S==[c(documentclass,[arg("article")],""),
+           c(begin,[arg("document")],"Hello world!\n")]
+     ]) :-
+  test_1_content(C),
+  stringify(C,S),
+  stringized_show(0,S).
+
+test(test_7,[S==c(hspace,[*,arg("4em")],"")]) :-
+  stringify([c(hspace, [*, arg([52, 101, 109])], [])],S),
+  stringized_show(0,S).
 
 % service
 

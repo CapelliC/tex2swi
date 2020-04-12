@@ -11,7 +11,6 @@
 :- module(tex2swi,
           [tex2swi/0
           ,parse_print/1
-          ,git_show_status/0
           ]).
 
 :- use_module(library(debug)).
@@ -33,29 +32,27 @@ generate_book(Structure) :-
     folder_book(Folder),
     format(atom(ImagesFolder),'~s/~w',[Folder,figures]),
     assertion(exists_directory(ImagesFolder)),
-    generate_swinb('examples/books/tabled_prolog',
-                   'Tabled Prolog',book,ImagesFolder,Structure).
+    generate_swinb(
+        'examples/books/tabled_prolog',
+        'example/books/tabled_prolog',
+        'Tabled Prolog',
+        book,
+        ImagesFolder,
+        Structure).
 
 folder_book(LatexFolder) :-
     module_property(tex2swi,file(ModuleFile)),
     path_list(ModuleFile,List),
     append(FolderList,[_,_],List),
     path_list(LatexFolder,FolderList).
+
 /*
-x :-
-    parse_book(Book),
-    parse_show(Book).
-*/
 git_show_status :-
     directory(Here),
     is_git_directory(Here),
     git_shortlog(Here,ShortLog,[]),
     maplist(writeln,ShortLog).
-/*
-    git([commit,'-m','test commit'],[directory(Here)]),
-    git([push],[directory(Here)]).
 */
-
 parse_print(Name) :-
     folder_book(Folder),
     parse_file(Folder,Name,Parsed),
