@@ -158,10 +158,23 @@ stringized_show(L,S) :-
       stringized_show(L+1,As)
   ).
 
-deb(As) :- deb('~w',As).
-deb(Spec,As) :-
+deb(As) :-
   context_module(Mod),
-  deb(tex2swi(Mod),Spec,As).
+  deb(tex2swi(Mod),As).
+deb(Selector,As) :-
+  deb(Selector,'~w',As).
 deb(Selector,Spec,As) :-
-  ( is_list(As) -> Args=As ; Args=[As] ),
+  (   var(Selector)
+  ->  context_module(Mod),
+      Selector=tex2swi(Mod)
+  ;   true
+  ),
+  (   var(Spec)
+  ->  Spec='~w'
+  ;   true
+  ),
+  (   is_list(As)
+  ->  Args=As
+  ;   Args=[As]
+  ),
   debug(Selector,Spec,Args).

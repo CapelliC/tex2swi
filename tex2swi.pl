@@ -56,8 +56,8 @@ git_show_status :-
 parse_print(Name) :-
     folder_book(Folder),
     parse_file(Folder,Name,Parsed),
-    gen_swinb:content_title(Parsed,Title),
-    format('title: ~s~n',[Title]),
+    %gen_swinb:content_title(Parsed,Title),
+    format('title: ~s~n',[_Title]),
     parse_show(Parsed,0),
-    phrase(gen_swinb:content(Parsed,Title,_,_),HtmlTokens),
-    html_write:print_html(HtmlTokens).
+    %phrase(gen_swinb:content(Parsed,Title,_,_),HtmlTokens),
+    html_write:print_html(_HtmlTokens).
