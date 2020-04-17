@@ -190,27 +190,31 @@ dump_whole_structure(Whole) :-
            ;   true
            )).
 */
-
 recover_sections(Chapters,Sections) :-
-    findall(chapter(C,Subs),
-            (   member(chapter(C,Ls),Chapters),
-                group_sequence_or_keep(Ls,section,G),
-                recover_subsections(G,Subs)
-            ),Sections).
+    maplist([chapter(C,Ls),chapter(C,Subs)]>>
+                (   has_marker(section,Ls)
+                ->  group_sequence(Ls,section,[],G),
+                    recover_subsections(G,Subs)
+                ;   Subs=Ls
+                )
+            , Chapters,Sections).
 recover_subsections(Sections,SubSections) :-
-    findall(section(S,Subs),
-            (   member(section(S,Ls),Sections),
-                group_sequence_or_keep(Ls,subsection,G),
+    maplist([section(S,Ls),section(S,Subs)]>>
+            (   has_marker(subsection,Ls)
+            ->  group_sequence(Ls,subsection,[],G),
                 recover_subsubsections(G,Subs)
-            ),SubSections).
+            ;   Subs=Ls
+            ),Sections,SubSections).
 recover_subsubsections(SubSections,SubSubSections) :-
-    findall(subsection(T,SubSubs),
-            (   member(subsection(T,Ls),SubSections),
-                group_sequence_or_keep(Ls,subsubsection,SubSubs)
-            ),SubSubSections).
+    maplist([subsection(T,Ls),subsection(T,SubSubs)]>>
+            group_sequence_or_keep(Ls,subsubsection,SubSubs)
+           ,SubSections,SubSubSections).
+
+has_marker(Marker,Sequence) :-
+    memberchk(c(Marker,_,_),Sequence).
 
 group_sequence_or_keep(Sequence,Marker,Grouped) :-
-    (   memberchk(c(Marker,_,_),Sequence)
+    (   has_marker(Marker,Sequence)
     ->  group_sequence(Sequence,Marker,[],Grouped)
     ;   Grouped=Sequence
     ).
@@ -224,7 +228,15 @@ group_sequence(S,Marker,Args,[Last]) :-
     Last=..[Marker,Args,S].
 
 page_title(Title) -->
-    html(h3('~s'-[Title])).
+    html(h1('~s'-[Title])).
+chapter_title(Title) -->
+    html(h2(Title)).
+section_title(Title) -->
+    html(h3(Title)).
+subsection_title(Title) -->
+    html(h4(Title)).
+subsubsection_title(Title) -->
+    html(h5(Title)).
 
 optlink(E,Chapters,Linked) :-
     I is E,
@@ -234,9 +246,12 @@ optlink(_,_,_).
 
 navigation(Chapter,Prev,Next) -->
     {deb(navigation(Chapter.title))},
-    content_link(to_prev_chapter,Prev),
-    page_title(Chapter.title),
-    content_link(to_next_chapter,Next).
+    html(div(class('nb-cell html'),
+             table(tr([
+                   td(\content_link(to_prev_chapter,Prev)),
+                   td(\chapter_title(Chapter.title)),
+                   td(\content_link(to_next_chapter,Next))
+               ])))).
 
 content_link(Class,Chapter) -->
     {var(Chapter)} -> []
@@ -244,16 +259,39 @@ content_link(Class,Chapter) -->
     html(a([class(Class),href(Chapter.href)],Chapter.title)).
 
 content(Chapter,PrevCh,NextCh) -->
-    {length(Chapter.content,Length)},
-    html([
-        \page_css,
-        div(class(notebook),[
-                \navigation(Chapter,PrevCh,NextCh),
-                div(class('nb-cell html'),
-                    div('content length ~w'-[Length])
-                   )
-            ])
-    ]).
+    html(div(class(notebook),
+             [\page_css,
+              \navigation(Chapter,PrevCh,NextCh),
+              \foreach(member(E,Chapter.content),
+                       html(div(class('nb-cell html'),
+                                \section_cell(E))))
+             ])).
+
+structured_text(T) -->
+    (   {string(T)}
+    ->  html('~s'-[T])
+    ;   {is_list(T)}
+    ->  html('~s'-[list])
+    ;   html('~s'-[unknown])
+    ).
+
+section_cell(SecOrText) -->
+    {SecOrText=section(Title,Content)}
+    -> html([\section_title(Title),
+          \foreach(member(C,Content),
+                   html(\subsection_cell(C)))])
+    ;  structured_text(SecOrText).
+subsection_cell(SubOrText) -->
+    {SubOrText=subsection(Title,Content)}
+    -> html([\subsection_title(Title),
+          \foreach(member(C,Content),
+                   html(\subsubsection_cell(C)))])
+    ;  structured_text(SubOrText).
+subsubsection_cell(SubSubOrText) -->
+    {SubSubOrText=subsubsection(Title,Content)}
+    -> html([\subsubsection_title(Title),\structured_text(Content)])
+    ;  structured_text(SubSubOrText).
+
 
 publish_entry_point(SwishFolder) :-
     gen_params(_,_,Base),
