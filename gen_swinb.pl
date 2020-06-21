@@ -5,7 +5,8 @@
 */
 
 :- module(gen_swinb, [
-              generate_swinb/6
+              generate_swinb/6,
+              images_folder/2
           ]).
 
 :- use_module(path_utility).
@@ -25,16 +26,26 @@ generate_swinb(TargetFolder,TargetBaseUrl,Title,Name,ImagesFolder,Structure) :-
 
     swish_folder(SwishFolder),
     path_list(StructFolder,[SwishFolder,TargetFolder]),
+    ensure_directory(StructFolder),
+    /*
     (   exists_directory(StructFolder)
     ->  true
     ;   make_directory_path(StructFolder)
     ),
+    */
 
     retractall(gen_params(_,_,_)),
     assertz(gen_params(StructFolder,ImagesFolder,TargetBaseUrl)),
 
     generate_structure(Title,Name,Structure),
     publish_entry_point(SwishFolder).
+
+images_folder(TargetFolder,ImagesFolder) :-
+    swish_folder(SwishFolder),
+    path_list(StructFolder,[SwishFolder,TargetFolder]),
+    ensure_directory(StructFolder),
+    path_list(ImagesFolder,[SwishFolder,TargetFolder,images]),
+    ensure_directory(ImagesFolder).
 
 swish_folder(SwishFolder) :-
 

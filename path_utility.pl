@@ -7,6 +7,7 @@
 :- module(path_utility,
           [module_directory/2
           ,directory/1
+          ,ensure_directory/1
           ,path_list/2
           ,tex_file/3
           ,swinb_file/3
@@ -26,6 +27,12 @@ directory(Directory) :-
     context_module(Module),
     module_directory(Module,Directory).
 
+ensure_directory(Directory) :-
+    (   exists_directory(Directory)
+    ->  true
+    ;   make_directory_path(Directory)
+    ).
+
 % file name utility
 path_list(Path,List) :-
     atomic_list_concat(List,/,Path).
@@ -35,28 +42,28 @@ tex_file(Folder,Basename,TexFile) :-
 swinb_file(Folder,Basename,TexFile) :-
     ext_file(swinb,Folder,Basename,TexFile).
 
-ext_file(Ext,Folder,Basename,TexFile) :-
-    format(atom(TexFile),'~s/~s.~s',[Folder,Basename,Ext]).
+ext_file(Ext,Directory,Basename,TexFile) :-
+    format(atom(TexFile),'~s/~s.~s',[Directory,Basename,Ext]).
 
-cache_directory(Cache_directory) :-
+cache_directory(CacheDirectory) :-
     module_directory(path_utility,ThisDirectory),
-    format(atom(Cache_directory),'~s/~s',[ThisDirectory,cache]),
-    (   exists_directory(Cache_directory)
+    format(atom(CacheDirectory),'~s/~s',[ThisDirectory,cache]),
+    (   exists_directory(CacheDirectory)
     ->  true
-    ;   make_directory(Cache_directory)
+    ;   make_directory(CacheDirectory)
     ).
 
 cached_file(Basename,Path) :-
-    cache_directory(Cache_directory),
-    ext_file(plc,Cache_directory,Basename,Path).
+    cache_directory(CacheDirectory),
+    ext_file(plc,CacheDirectory,Basename,Path).
 
-tex_cached_info(Folder,Basename,TexInfo,CachedInfo) :-
-    tex_file(Folder,Basename,TexPath),
+tex_cached_info(Directory,Basename,TexInfo,CachedInfo) :-
+    tex_file(Directory,Basename,TexPath),
     info_path(TexPath,TexInfo),
     cached_file(Basename,CachedPath),
     info_path(CachedPath,CachedInfo),
     debug(path_utility(cache), '~w',
-          [tex_cached_info(Folder,Basename,TexInfo,CachedInfo)]).
+          [tex_cached_info(Directory,Basename,TexInfo,CachedInfo)]).
 
 info_path(Path,info(Path,Timestamp)) :-
     (   exists_file(Path),
