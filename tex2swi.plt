@@ -67,6 +67,10 @@ test(test_7,[S==c(hspace,[*,arg("4em")],"")]) :-
   stringify([c(hspace, [*, arg([52, 101, 109])], [])],S),
   stringized_show(0,S).
 
+test(test_8,[]) :-
+  parse_test(test_8,R),
+  parse_show(R).
+
 % service
 
 test_1_content(

@@ -19,6 +19,7 @@
 
 %:- use_module(library(yall)).
 :- use_module(library(debug)).
+:- use_module(parse_tex).
 :- use_module(path_utility).
 
 parse_test(F,R) :-

@@ -283,7 +283,10 @@ structured_text(T) -->
     ->  html('~s'-[T])
     ;   {is_list(T)}
     ->  html('~s'-[list])
-    ;   html('~s'-[unknown])
+    %;   {T=c(begin,[arg("verbatim")],V)}
+    %->  html(pre(V))
+    ;   {format(string(S),'unknown ({ ~q })',[T])},
+        html('~s'-[S])
     ).
 
 section_cell(SecOrText) -->

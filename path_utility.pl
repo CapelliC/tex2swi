@@ -39,8 +39,8 @@ path_list(Path,List) :-
 
 tex_file(Folder,Basename,TexFile) :-
     ext_file(tex,Folder,Basename,TexFile).
-swinb_file(Folder,Basename,TexFile) :-
-    ext_file(swinb,Folder,Basename,TexFile).
+swinb_file(Folder,Basename,SwinbFile) :-
+    ext_file(swinb,Folder,Basename,SwinbFile).
 
 ext_file(Ext,Directory,Basename,TexFile) :-
     format(atom(TexFile),'~s/~s.~s',[Directory,Basename,Ext]).
