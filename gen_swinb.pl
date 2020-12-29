@@ -278,14 +278,35 @@ content(Chapter,PrevCh,NextCh) -->
                                 \section_cell(E))))
              ])).
 
+unquote(Q,U) :-
+    atom_string(U,Q).
+        %format('<~w>',Q),U=Q.
+
 structured_text(T) -->
+    {format('structured_text <~w>~n',[T])},
     (   {string(T)}
     ->  html('~s'-[T])
+
     ;   {is_list(T)}
-    ->  html('~s'-[list])
-    %;   {T=c(begin,[arg("verbatim")],V)}
-    %->  html(pre(V))
-    ;   {format(string(S),'unknown ({ ~q })',[T])},
+    ->  html(div(class(list),
+                 \foreach(member(E,T),
+                          structured_text(E)))) % html('~s'-[list])
+
+    ;   {T=c(begin,[arg("verbatim")],V)}
+    ->  html(div(class('nb-cell program'),V))
+%    ;   {T=c(begin,[arg("verbatim")],V)}
+%    ->  html(pre(V))
+
+    ;   {T=c(emph,[arg(A)],V)}
+    ->  html(b(A)), structured_text(V)
+
+    ;   {T=c(em,[],V)}
+    ->  html(b('~s'-[V]))
+
+    ;   {T=c(K,[arg(A)],V),unquote(A,U)}
+    ->  html(div(class('~q-~q'-[K,U]),\structured_text(V)))
+
+    ;   {format(string(S),'UNKNOWN { ~q }',[T])},
         html('~s'-[S])
     ).
 

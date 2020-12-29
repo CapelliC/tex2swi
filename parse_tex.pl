@@ -76,6 +76,11 @@ content(Stops,[c(begin,[arg(`verbatim`)],As)|Cs]) -->
     !,
     content(Stops,Cs).
 
+content(Stops,[c(em,[],As)|Cs]) -->
+    "{", spc, "\\em", spc, string(As), spc, "}",
+    !,
+    content(Stops,Cs).
+
 content(Stops,Content) -->
     count_codes_to_eof(D),
     command(C,As),

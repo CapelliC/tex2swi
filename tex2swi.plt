@@ -70,8 +70,22 @@ test(test_7,[S==c(hspace,[*,arg("4em")],"")]) :-
 test(test_8,[]) :-
   parse_test(test_8,R),
   parse_show(R).
+/*
+test(test_9,[R==[c(documentclass,[arg("memoir")],"")]]) :-
+  parse_test(test_9,R),
+  parse_show(R).
+*/
+test(test_9,[]) :-
+  writeln(test_9),
+  parse_test(test_9,R),
+  stringify(R,S),
+  parse_show(R),
+  writeln(r:R),
+  writeln(s:S),
+  phrase(gen_swinb:structured_text(S),L),
+  writeln(l:L).
 
-% service
+  % service
 
 test_1_content(
     [ c(documentclass,[arg(`article`)],[]),

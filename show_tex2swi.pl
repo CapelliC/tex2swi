@@ -23,9 +23,10 @@ stop :-
 home_page(_Request) :-
     reply_html_page(
         [ title('Demo server'),
-          script('https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.15.2/cytoscape.min.js')
+          script('https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.17.1/cytoscape.min.js')
         ],
         [ h1('Hello world!'),
           div(['with a check', input([type=checkbox,checked])]),
-          div('host cy')
+          div('host cy'),
+          div('host cx')
         ]).
